@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TechStore | Your Cart</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="index.html" class="logo">TechStore</a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="cart.html" class="active">Cart (<span id="cart-count">0</span>)</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="fade-in" style="margin-top: 3rem;">
+    <h1 class="section-title">Your Shopping Cart</h1>
+    <div class="card" style="max-width: 800px; margin: 0 auto;">
+      <ul id="cart-items">
+        <!-- JavaScript will insert items here -->
+      </ul>
+      <div class="cart-total">
+        Total: $<span id="cart-total-price">0.00</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
+        <button class="btn btn-danger" onclick="clearCart()">Empty Cart</button>
+        <button class="btn" onclick="alert('Checkout process would start here!')">Proceed to Checkout</button>
+      </div>
+    </div>
+  </main>
+
+  <footer><p>&copy; 2026 TechStore. All rights reserved.</p></footer>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechStore | Home</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="index.html" class="logo">TechStore</a>
+      <div class="nav-links">
+        <a href="index.html" class="active">Home</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="cart.html">Cart (<span id="cart-count">0</span>)</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- NEW HERO SECTION -->
+  <section class="hero fade-in">
+    <h1>Next-Gen Tech, Delivered.</h1>
+    <p>Upgrade your workflow and lifestyle with our premium selection of electronics, audio gear, and smart devices.</p>
+    <a href="#shop" class="btn">Shop Now</a>
+  </section>
+
+  <main id="shop" class="fade-in">
+    <h2 class="section-title">Trending Products</h2>
+    <div class="product-grid">
+     <!-- Product 1 (Headphones) -->
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80" alt="Wireless Headphones">
+        <h2>Wireless Headphones</h2>
+        <p class="price">$99.00</p>
+        <a href="product.html?item=headphones" class="btn">View Details</a>
+      </div>
+
+      <!-- Product 2 (Watch) -->
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80" alt="Smart Watch">
+        <h2>Smart Watch</h2>
+        <p class="price">$149.00</p>
+        <a href="product.html?item=watch" class="btn">View Details</a>
+      </div>
+
+      <!-- Product 3 (Keyboard) -->
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=500&q=80" alt="Mechanical Keyboard">
+        <h2>Mechanical Keyboard</h2>
+        <p class="price">$85.00</p>
+        <a href="product.html?item=keyboard" class="btn">View Details</a>
+      </div>
+    </div>
+  </main>
+
+  <footer><p>&copy; 2026 TechStore. All rights reserved.</p></footer>
+  <script src="script.js"></script>
+</body>
+</html>
