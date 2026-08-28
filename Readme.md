@@ -1,6 +1,6 @@
 # TechStore - E-Commerce Web Application
 
-A responsive, 5-page e-commerce storefront. This project demonstrates front-end layout fundamentals, responsive design, and client-side state management.
+A responsive, 5-page e-commerce storefront built for the Nexium Technologies Web Development Internship task. This project demonstrates front-end layout fundamentals, responsive design, and client-side state management.
 
 ## Project Features
 
