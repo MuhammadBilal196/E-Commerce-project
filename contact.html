@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Get in touch with the TechStore support team.">
-  <meta name="theme-color" content="#0f172a">
+  <meta name="theme-color" content="#0b1120">
   <title>Contact Us | TechStore</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,6 +14,8 @@
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
 
+  <div class="announcement">🚚 Free shipping on orders over $100 &nbsp;·&nbsp; Use code <code>TECH10</code> for 10% off</div>
+
   <header class="site-header">
     <nav class="navbar container" aria-label="Main navigation">
       <a href="index.html" class="logo">Tech<span>Store</span></a>
@@ -21,50 +23,62 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>
       <ul class="nav-links" id="nav-links">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="contact.html" class="active" aria-current="page">Contact</a></li>
-          <li><a href="cart.html" class="cart-link">Cart <span class="cart-badge" data-cart-count aria-label="items in cart">0</span></a></li>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#shop">Shop</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html" class="active" aria-current="page">Contact</a></li>
+        <li><a href="cart.html" class="cart-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> Cart <span class="cart-badge" data-cart-count aria-label="items in cart">0</span></a></li>
       </ul>
     </nav>
   </header>
 
-  <main id="main" class="container page fade-in">
-    <h1 class="section-title center">Contact Support</h1>
-    <p class="section-subtitle">Questions about an order or a product? We usually reply within one business day.</p>
-    <div class="contact-layout">
-      <aside class="card contact-info">
-        <h2>Get in touch</h2>
-        <ul>
-          <li><span aria-hidden="true">📧</span><div><strong>Email</strong>support@techstore.com</div></li>
-          <li><span aria-hidden="true">📞</span><div><strong>Phone</strong>+1 (555) 123-4567</div></li>
-          <li><span aria-hidden="true">🕘</span><div><strong>Hours</strong>Mon – Fri, 9:00 – 18:00</div></li>
-        </ul>
-      </aside>
+  <main id="main">
+    <section class="page-hero">
+      <div class="container fade-in">
+      <nav aria-label="Breadcrumb"><ol class="breadcrumb"><li><a href="index.html">Home</a></li><li aria-current="page">Contact</li></ol></nav>
+      <h1>Contact Support</h1>
+      <p>Questions about an order or a product? We usually reply within one business day.</p>
+      </div>
+    </section>
+    <div class="container page-body">
+      <div class="contact-layout fade-in">
+        <aside class="card contact-info">
+          <h2>Get in touch</h2>
+          <p>Our team is here to help with orders, returns and product advice.</p>
+          <ul>
+            <li><span class="feature-icon" aria-hidden="true">📧</span><div><strong>Email</strong>support@techstore.com</div></li>
+            <li><span class="feature-icon" aria-hidden="true">📞</span><div><strong>Phone</strong>+92 300 1234567</div></li>
+            <li><span class="feature-icon" aria-hidden="true">📍</span><div><strong>Address</strong>Blue Area, Islamabad, Pakistan</div></li>
+            <li><span class="feature-icon" aria-hidden="true">🕘</span><div><strong>Hours</strong>Mon – Sat, 9:00 – 18:00</div></li>
+          </ul>
+        </aside>
 
-      <section class="card">
-        <div id="form-success" class="form-success" role="status" tabindex="-1">
-          ✅ Thanks! Your message has been sent. We'll get back to you soon.
-        </div>
-        <form id="contact-form" novalidate>
-          <div class="form-group">
-            <label for="name">Full Name</label>
-            <input type="text" id="name" name="name" autocomplete="name" placeholder="Your name" required>
-            <p class="field-error">Please enter your name.</p>
+        <section class="card">
+          <div id="form-success" class="form-success" role="status" tabindex="-1">
+            ✅ Thanks! Your message has been sent. We'll get back to you soon.
           </div>
-          <div class="form-group">
-            <label for="email">Email Address</label>
-            <input type="email" id="email" name="email" autocomplete="email" placeholder="name@example.com" required>
-            <p class="field-error">Please enter a valid email address.</p>
-          </div>
-          <div class="form-group">
-            <label for="message">Your Message</label>
-            <textarea id="message" name="message" placeholder="How can we help you?" required></textarea>
-            <p class="field-error">Message must be at least 10 characters.</p>
-          </div>
-          <button type="submit" class="btn btn-block">Send Message</button>
-        </form>
-      </section>
+          <form id="contact-form" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" autocomplete="name" placeholder="Your name" required>
+                <p class="field-error">Please enter your name.</p>
+              </div>
+              <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" autocomplete="email" placeholder="name@example.com" required>
+                <p class="field-error">Please enter a valid email address.</p>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="message">Your Message</label>
+              <textarea id="message" name="message" placeholder="How can we help you?" required></textarea>
+              <p class="field-error">Message must be at least 10 characters.</p>
+            </div>
+            <button type="submit" class="btn btn-lg btn-block">Send Message</button>
+          </form>
+        </section>
+      </div>
     </div>
   </main>
 
@@ -80,6 +94,7 @@
           <ul>
             <li><a href="index.html#shop">All Products</a></li>
             <li><a href="cart.html">Your Cart</a></li>
+            <li><a href="checkout.html">Checkout</a></li>
           </ul>
         </div>
         <div>
@@ -89,9 +104,16 @@
             <li><a href="contact.html">Contact</a></li>
           </ul>
         </div>
+        <div>
+          <h3>We Accept</h3>
+          <div class="pay-badges">
+            <span>VISA</span><span>Mastercard</span><span>JazzCash</span><span>Easypaisa</span><span>Cash on Delivery</span>
+          </div>
+        </div>
       </div>
       <div class="footer-bottom">
         <p>&copy; <span data-year>2026</span> TechStore. All rights reserved.</p>
+        <p>Built by Muhammad Bilal Raza · Nexium Technologies Internship</p>
       </div>
     </div>
   </footer>
