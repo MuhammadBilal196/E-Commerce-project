@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Shop premium headphones, smart watches and mechanical keyboards at TechStore.">
-  <meta name="theme-color" content="#0f172a">
+  <meta name="description" content="Shop premium headphones, laptops, smartphones, cameras and more at TechStore. Free shipping over $100.">
+  <meta name="theme-color" content="#0b1120">
   <title>TechStore | Premium Electronics & Gadgets</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,6 +14,8 @@
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
 
+  <div class="announcement">🚚 Free shipping on orders over $100 &nbsp;·&nbsp; Use code <code>TECH10</code> for 10% off</div>
+
   <header class="site-header">
     <nav class="navbar container" aria-label="Main navigation">
       <a href="index.html" class="logo">Tech<span>Store</span></a>
@@ -21,48 +23,110 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>
       <ul class="nav-links" id="nav-links">
-          <li><a href="index.html" class="active" aria-current="page">Home</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="contact.html">Contact</a></li>
-          <li><a href="cart.html" class="cart-link">Cart <span class="cart-badge" data-cart-count aria-label="items in cart">0</span></a></li>
+        <li><a href="index.html" class="active" aria-current="page">Home</a></li>
+        <li><a href="index.html#shop">Shop</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="cart.html" class="cart-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> Cart <span class="cart-badge" data-cart-count aria-label="items in cart">0</span></a></li>
       </ul>
     </nav>
   </header>
 
   <main id="main">
-    <section class="hero fade-in">
-      <h1>Next-Gen Tech, Delivered.</h1>
-      <p>Upgrade your workflow and lifestyle with our premium selection of electronics, audio gear and smart devices.</p>
-      <div class="hero-actions">
-        <a href="#shop" class="btn">Shop Now</a>
-        <a href="about.html" class="btn btn-light">Learn More</a>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="fade-in">
+          <span class="eyebrow"><span class="dot"></span> New season sale — up to 25% off</span>
+          <h1>Next-gen tech, <span class="gradient-text">delivered to your door.</span></h1>
+          <p>Upgrade your workflow and lifestyle with our curated selection of laptops, audio gear, smart devices and accessories.</p>
+          <div class="hero-actions">
+            <a href="#shop" class="btn btn-lg">Shop Now →</a>
+            <a href="about.html" class="btn btn-lg btn-light">Learn More</a>
+          </div>
+          <div class="hero-trust">
+            <div><strong>12+</strong><span>Premium products</span></div>
+            <div><strong>10K+</strong><span>Happy customers</span></div>
+            <div><strong>4.7★</strong><span>Average rating</span></div>
+          </div>
+        </div>
+        <div class="hero-visual fade-in-delay">
+          <div class="hero-card">
+            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=80" alt="Premium wireless headphones" data-fallback="🎧" width="900" height="990">
+          </div>
+          <div class="floating-badge one"><span class="icon" aria-hidden="true">🚚</span><div><strong>Free delivery</strong><span>On orders over $100</span></div></div>
+          <div class="floating-badge two"><span class="icon" aria-hidden="true">⭐</span><div><strong>4.8 / 5</strong><span>214 reviews</span></div></div>
+        </div>
       </div>
     </section>
 
     <div class="container">
       <section class="features fade-in" aria-label="Why shop with us">
         <div class="feature"><span class="feature-icon" aria-hidden="true">🚚</span><div><h3>Free Shipping</h3><p>On orders over $100</p></div></div>
-        <div class="feature"><span class="feature-icon" aria-hidden="true">🔒</span><div><h3>Secure Checkout</h3><p>Your data stays protected</p></div></div>
+        <div class="feature"><span class="feature-icon" aria-hidden="true">🔒</span><div><h3>Secure Payments</h3><p>Card, wallet or COD</p></div></div>
         <div class="feature"><span class="feature-icon" aria-hidden="true">↩️</span><div><h3>30-Day Returns</h3><p>Hassle-free refunds</p></div></div>
+        <div class="feature"><span class="feature-icon" aria-hidden="true">🛡️</span><div><h3>1-Year Warranty</h3><p>On every product</p></div></div>
       </section>
 
-      <section id="shop" class="fade-in" style="padding-bottom: 4rem; scroll-margin-top: 90px;">
+      <section id="shop" class="section">
         <div class="section-header">
-          <h2 class="section-title">Trending Products</h2>
-          <label>
-            <span class="visually-hidden">Sort products</span>
-            <select id="sort-select" class="select">
-              <option value="featured">Sort: Featured</option>
-              <option value="price-asc">Price: Low to High</option>
-              <option value="price-desc">Price: High to Low</option>
-              <option value="rating">Top Rated</option>
-            </select>
-          </label>
+          <div>
+            <span class="section-label">Our Collection</span>
+            <h2 class="section-title">Shop the latest tech</h2>
+          </div>
+          <span id="result-count" class="section-subtitle" aria-live="polite"></span>
         </div>
+
+        <div class="toolbar">
+          <div class="chips" id="category-chips" role="group" aria-label="Filter by category"></div>
+          <div class="toolbar-right">
+            <label class="search">
+              <span class="visually-hidden">Search products</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input type="search" id="search-input" placeholder="Search products…" autocomplete="off">
+            </label>
+            <label>
+              <span class="visually-hidden">Sort products</span>
+              <select id="sort-select" class="select">
+                <option value="featured">Sort: Featured</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="rating">Top Rated</option>
+                <option value="discount">Biggest Discount</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
         <div class="product-grid" id="product-grid">
           <!-- Products are rendered from the catalogue in script.js -->
         </div>
         <noscript><p>Please enable JavaScript to browse products.</p></noscript>
+      </section>
+
+      <section class="section" aria-label="Promotion">
+        <div class="promo">
+          <div>
+            <h2>Get 10% off your first order</h2>
+            <p>Apply the code at checkout and enjoy free shipping on orders over $100. Limited time only.</p>
+            <a href="#shop" class="btn">Start Shopping</a>
+          </div>
+          <div class="promo-code">
+            <span>Use code</span>
+            <strong>TECH10</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-label="Newsletter">
+        <div class="newsletter">
+          <h2>Stay in the loop</h2>
+          <p>Subscribe for new arrivals, exclusive deals and tech tips — no spam, ever.</p>
+          <form class="newsletter-form" data-newsletter novalidate>
+            <label for="newsletter-email" class="visually-hidden">Email address</label>
+            <input type="email" id="newsletter-email" placeholder="Enter your email" autocomplete="email">
+            <button type="submit" class="btn">Subscribe</button>
+          </form>
+        </div>
       </section>
     </div>
   </main>
@@ -79,6 +143,7 @@
           <ul>
             <li><a href="index.html#shop">All Products</a></li>
             <li><a href="cart.html">Your Cart</a></li>
+            <li><a href="checkout.html">Checkout</a></li>
           </ul>
         </div>
         <div>
@@ -88,9 +153,16 @@
             <li><a href="contact.html">Contact</a></li>
           </ul>
         </div>
+        <div>
+          <h3>We Accept</h3>
+          <div class="pay-badges">
+            <span>VISA</span><span>Mastercard</span><span>JazzCash</span><span>Easypaisa</span><span>Cash on Delivery</span>
+          </div>
+        </div>
       </div>
       <div class="footer-bottom">
         <p>&copy; <span data-year>2026</span> TechStore. All rights reserved.</p>
+        <p>Built by Muhammad Bilal Raza · Nexium Technologies Internship</p>
       </div>
     </div>
   </footer>
