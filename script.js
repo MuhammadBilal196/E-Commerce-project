@@ -1,11 +1,14 @@
 /**
  * TechStore — client-side storefront logic
  *
- * Features:
- *  - Single product catalogue used by every page
- *  - Persistent cart (localStorage) with quantities
- *  - Dynamic home grid (with sorting), product page and cart page
- *  - Toast notifications, mobile navigation, contact-form validation
+ *  1. Product catalogue (single source of truth)
+ *  2. Cart + coupon store (localStorage)
+ *  3. UI helpers (toasts, nav, image fallbacks, newsletter)
+ *  4. Home page   — product grid with category filter, search and sort
+ *  5. Product page — details, quantity, related products
+ *  6. Cart page   — quantities, coupon, order summary
+ *  7. Checkout    — shipping + payment (card / wallet / cash on delivery)
+ *  8. Contact form validation
  */
 (function () {
     'use strict';
@@ -14,19 +17,22 @@
        1. PRODUCT CATALOGUE
        ====================================================================== */
 
+    const img = (id) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=800&q=80`;
+
     const PRODUCTS = [
         {
             id: 'headphones',
             name: 'Premium Wireless Headphones',
             category: 'Audio',
             price: 99.0,
+            oldPrice: 129.0,
             rating: 4.8,
             reviews: 214,
             tag: 'Bestseller',
-            image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80',
+            image: img('photo-1505740420928-5e560c06d30e'),
             description:
-                'Experience industry-leading noise cancellation and crystal-clear audio with our premium over-ear wireless headphones. Plush ear cushions keep you comfortable all day long.',
-            specs: ['Active noise cancellation', '30-hour battery life', 'Bluetooth 5.0 connectivity', 'Foldable design with travel case']
+                'Industry-leading noise cancellation and crystal-clear audio in a lightweight over-ear design. Plush ear cushions keep you comfortable all day long.',
+            specs: ['Active noise cancellation', '30-hour battery life', 'Bluetooth 5.3', 'Foldable with travel case']
         },
         {
             id: 'watch',
@@ -36,10 +42,10 @@
             rating: 4.6,
             reviews: 158,
             tag: 'New',
-            image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80',
+            image: img('photo-1523275335684-37898b6baf30'),
             description:
-                'Stay connected and track your fitness goals with our advanced smart watch. A vibrant display and water-resistant build make it perfect for any workout.',
-            specs: ['Vibrant OLED display', '24/7 heart-rate monitoring', 'Sleep & activity tracking', 'Water resistant up to 50 m']
+                'Track workouts, sleep and heart rate with a vibrant always-on display and a water-resistant build made for everyday adventures.',
+            specs: ['1.4" AMOLED display', '24/7 heart-rate monitor', 'Sleep & activity tracking', 'Water resistant to 50 m']
         },
         {
             id: 'keyboard',
@@ -48,18 +54,149 @@
             price: 85.0,
             rating: 4.7,
             reviews: 97,
-            tag: '',
-            image: 'https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=800&q=80',
+            image: img('photo-1595225476474-87563907a212'),
             description:
-                'Elevate your typing and gaming experience with tactile switches, customisable lighting and an ergonomic frame built to last.',
-            specs: ['Tactile blue switches', 'Per-key RGB lighting', 'Aluminium frame', 'Detachable USB-C cable']
+                'Tactile switches, customisable per-key lighting and a solid aluminium frame make every keystroke satisfying — at work or in game.',
+            specs: ['Tactile mechanical switches', 'Per-key RGB lighting', 'Aluminium top plate', 'Detachable USB-C cable']
+        },
+        {
+            id: 'earbuds',
+            name: 'True Wireless Earbuds Pro',
+            category: 'Audio',
+            price: 79.0,
+            oldPrice: 99.0,
+            rating: 4.5,
+            reviews: 342,
+            tag: 'Hot',
+            image: img('photo-1590658268037-6bf12165a8df'),
+            description:
+                'Pocket-sized earbuds with rich bass, transparency mode and a compact charging case that delivers a full day of listening.',
+            specs: ['Hybrid noise cancelling', '28 h total with case', 'IPX4 sweat resistant', 'Touch controls']
+        },
+        {
+            id: 'mouse',
+            name: 'Ergonomic Wireless Mouse',
+            category: 'Accessories',
+            price: 39.0,
+            rating: 4.4,
+            reviews: 121,
+            image: img('photo-1527864550417-7fd91fc51a46'),
+            description:
+                'A sculpted, palm-friendly design with a precision sensor and silent clicks — perfect for long work sessions.',
+            specs: ['4000 DPI optical sensor', 'Silent click buttons', '70-day battery life', 'Multi-device pairing']
+        },
+        {
+            id: 'speaker',
+            name: 'Portable Bluetooth Speaker',
+            category: 'Audio',
+            price: 59.0,
+            oldPrice: 75.0,
+            rating: 4.6,
+            reviews: 188,
+            image: img('photo-1608043152269-423dbba4e7e1'),
+            description:
+                '360° sound with deep bass in a rugged, waterproof body. Take the party to the beach, the park or the shower.',
+            specs: ['360° surround sound', '15-hour playtime', 'IP67 waterproof', 'Built-in microphone']
+        },
+        {
+            id: 'laptop',
+            name: 'UltraBook Pro 14"',
+            category: 'Computers',
+            price: 1099.0,
+            oldPrice: 1249.0,
+            rating: 4.9,
+            reviews: 76,
+            tag: 'Premium',
+            image: img('photo-1496181133206-80ce9b88a853'),
+            description:
+                'A featherweight aluminium laptop with a stunning 14" display, all-day battery and the power to handle creative work on the go.',
+            specs: ['14" 2.8K display', '16 GB RAM · 512 GB SSD', 'Up to 18 h battery', 'Backlit keyboard']
+        },
+        {
+            id: 'monitor',
+            name: '27" 4K UHD Monitor',
+            category: 'Computers',
+            price: 329.0,
+            rating: 4.7,
+            reviews: 64,
+            image: img('photo-1527443224154-c4a3942d3acf'),
+            description:
+                'Razor-sharp 4K resolution with wide colour coverage and a slim bezel design that looks great in any workspace.',
+            specs: ['3840 × 2160 IPS panel', '99% sRGB colour', 'USB-C with 65 W charging', 'Height-adjustable stand']
+        },
+        {
+            id: 'camera',
+            name: 'Mirrorless Camera Kit',
+            category: 'Cameras',
+            price: 749.0,
+            rating: 4.8,
+            reviews: 53,
+            image: img('photo-1516035069371-29a1b244cc32'),
+            description:
+                'Capture stunning photos and 4K video with a compact mirrorless body and a versatile kit lens included.',
+            specs: ['24 MP APS-C sensor', '4K 30p video', 'In-body stabilisation', '18–55 mm kit lens']
+        },
+        {
+            id: 'smartphone',
+            name: 'Galaxy-Class Smartphone',
+            category: 'Phones & Tablets',
+            price: 699.0,
+            oldPrice: 799.0,
+            rating: 4.6,
+            reviews: 205,
+            tag: 'Deal',
+            image: img('photo-1511707171634-5f897ff02aa9'),
+            description:
+                'A brilliant edge-to-edge display, pro-grade triple camera and a battery that easily lasts all day.',
+            specs: ['6.5" 120 Hz OLED', 'Triple 50 MP camera', '5000 mAh battery', '256 GB storage']
+        },
+        {
+            id: 'tablet',
+            name: '11" Pro Tablet',
+            category: 'Phones & Tablets',
+            price: 499.0,
+            rating: 4.7,
+            reviews: 89,
+            image: img('photo-1544244015-0df4b3ffc6b0'),
+            description:
+                'Sketch, stream and multitask on a gorgeous 11" display. Pairs perfectly with a keyboard case for productivity anywhere.',
+            specs: ['11" Liquid display', '128 GB storage', 'Stylus support', 'Up to 10 h battery']
+        },
+        {
+            id: 'controller',
+            name: 'Wireless Game Controller',
+            category: 'Gaming',
+            price: 59.0,
+            rating: 4.5,
+            reviews: 167,
+            image: img('photo-1592840496694-26d035b52b48'),
+            description:
+                'Responsive triggers, precise thumbsticks and a comfortable grip for marathon gaming sessions on PC and console.',
+            specs: ['Low-latency wireless', 'Rechargeable battery', 'Haptic feedback', 'PC & console compatible']
         }
     ];
 
+    const CATEGORY_ICONS = {
+        Audio: '🎧',
+        Wearables: '⌚',
+        Accessories: '⌨️',
+        Computers: '💻',
+        Cameras: '📷',
+        'Phones & Tablets': '📱',
+        Gaming: '🎮'
+    };
+
+    const COUPONS = {
+        TECH10: { percent: 10, label: '10% off your order' },
+        STUDENT15: { percent: 15, label: '15% student discount' }
+    };
+
     const CART_KEY = 'techstore_cart_v2';
+    const COUPON_KEY = 'techstore_coupon';
     const FREE_SHIPPING_THRESHOLD = 100;
     const SHIPPING_FEE = 9.99;
     const TAX_RATE = 0.08;
+    const MAX_QTY = 10;
 
     const findProduct = (id) => PRODUCTS.find((p) => p.id === id);
 
@@ -75,38 +212,59 @@
         return '★'.repeat(full) + '☆'.repeat(5 - full);
     };
 
+    const discountPercent = (p) => (p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0);
+
+    const productUrl = (p) => `product.html?item=${encodeURIComponent(p.id)}`;
+
+    /** Image tag with a graceful fallback if the remote image fails to load. */
+    const productImg = (p, attrs = '') =>
+        `<img src="${p.image}" data-fallback="${CATEGORY_ICONS[p.category] || '🛍️'}" ${attrs}>`;
+
     /* ======================================================================
-       2. CART STORE
+       2. CART & COUPON STORE
        ====================================================================== */
+
+    const storage = {
+        get(key, fallback) {
+            try {
+                const v = JSON.parse(localStorage.getItem(key));
+                return v === null ? fallback : v;
+            } catch {
+                return fallback;
+            }
+        },
+        set(key, value) {
+            try {
+                localStorage.setItem(key, JSON.stringify(value));
+            } catch {
+                /* storage unavailable (private mode) — ignore */
+            }
+        }
+    };
 
     const Cart = {
         /** @returns {{id: string, qty: number}[]} */
         get() {
-            try {
-                const data = JSON.parse(localStorage.getItem(CART_KEY));
-                // Drop anything that no longer exists in the catalogue
-                return Array.isArray(data) ? data.filter((i) => findProduct(i.id) && i.qty > 0) : [];
-            } catch {
-                return [];
-            }
+            const data = storage.get(CART_KEY, []);
+            return Array.isArray(data) ? data.filter((i) => findProduct(i.id) && i.qty > 0) : [];
         },
 
         save(items) {
-            localStorage.setItem(CART_KEY, JSON.stringify(items));
+            storage.set(CART_KEY, items);
             updateCartBadge(true);
         },
 
         add(id, qty = 1) {
             const items = this.get();
             const existing = items.find((i) => i.id === id);
-            if (existing) existing.qty += qty;
-            else items.push({ id, qty });
+            if (existing) existing.qty = Math.min(MAX_QTY, existing.qty + qty);
+            else items.push({ id, qty: Math.min(MAX_QTY, qty) });
             this.save(items);
         },
 
         setQty(id, qty) {
             const items = this.get()
-                .map((i) => (i.id === id ? { ...i, qty } : i))
+                .map((i) => (i.id === id ? { ...i, qty: Math.min(MAX_QTY, qty) } : i))
                 .filter((i) => i.qty > 0);
             this.save(items);
         },
@@ -117,6 +275,7 @@
 
         clear() {
             this.save([]);
+            Coupon.remove();
         },
 
         count() {
@@ -125,9 +284,28 @@
 
         totals() {
             const subtotal = this.get().reduce((sum, i) => sum + findProduct(i.id).price * i.qty, 0);
-            const shipping = subtotal === 0 || subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
-            const tax = subtotal * TAX_RATE;
-            return { subtotal, shipping, tax, total: subtotal + shipping + tax };
+            const coupon = Coupon.get();
+            const discount = coupon ? subtotal * (COUPONS[coupon].percent / 100) : 0;
+            const afterDiscount = subtotal - discount;
+            const shipping = afterDiscount === 0 || afterDiscount >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
+            const tax = afterDiscount * TAX_RATE;
+            return { subtotal, coupon, discount, afterDiscount, shipping, tax, total: afterDiscount + shipping + tax };
+        }
+    };
+
+    const Coupon = {
+        get() {
+            const code = storage.get(COUPON_KEY, null);
+            return code && COUPONS[code] ? code : null;
+        },
+        apply(code) {
+            const normalised = String(code).trim().toUpperCase();
+            if (!COUPONS[normalised]) return false;
+            storage.set(COUPON_KEY, normalised);
+            return true;
+        },
+        remove() {
+            localStorage.removeItem(COUPON_KEY);
         }
     };
 
@@ -141,6 +319,16 @@
                 el.classList.add('bump');
             }
         });
+    }
+
+    /** Shared HTML for the order totals block (cart + checkout). */
+    function totalsHTML(t) {
+        return `
+            <div class="summary-row"><span>Subtotal</span><span>${formatPrice(t.subtotal)}</span></div>
+            ${t.coupon ? `<div class="summary-row discount"><span>Discount (${t.coupon})</span><span>−${formatPrice(t.discount)}</span></div>` : ''}
+            <div class="summary-row"><span>Shipping</span><span>${t.shipping === 0 ? 'Free' : formatPrice(t.shipping)}</span></div>
+            <div class="summary-row"><span>Estimated tax (8%)</span><span>${formatPrice(t.tax)}</span></div>
+            <div class="summary-row total"><span>Total</span><span>${formatPrice(t.total)}</span></div>`;
     }
 
     /* ======================================================================
@@ -179,6 +367,48 @@
         });
     }
 
+    /** Replace broken images with a branded gradient placeholder. */
+    function initImageFallbacks() {
+        const placeholder = (emoji) =>
+            'data:image/svg+xml,' +
+            encodeURIComponent(
+                `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e0f2fe"/><stop offset="1" stop-color="#e0e7ff"/></linearGradient></defs><rect width="400" height="400" fill="url(#g)"/><text x="200" y="225" font-size="120" text-anchor="middle">${emoji}</text></svg>`
+            );
+
+        document.addEventListener(
+            'error',
+            (e) => {
+                const el = e.target;
+                if (el.tagName === 'IMG' && el.dataset.fallback && !el.dataset.failed) {
+                    el.dataset.failed = 'true';
+                    el.src = placeholder(el.dataset.fallback);
+                }
+            },
+            true
+        );
+
+        // Images that failed before this listener was attached
+        document.querySelectorAll('img[data-fallback]').forEach((el) => {
+            if (el.complete && el.naturalWidth === 0) el.dispatchEvent(new Event('error'));
+        });
+    }
+
+    function initNewsletter() {
+        document.querySelectorAll('[data-newsletter]').forEach((form) =>
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const input = form.querySelector('input[type="email"]');
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim())) {
+                    toast('Please enter a valid email address', { type: 'error' });
+                    input.focus();
+                    return;
+                }
+                form.reset();
+                toast("You're subscribed! Watch your inbox for exclusive deals.");
+            })
+        );
+    }
+
     function setFooterYear() {
         document.querySelectorAll('[data-year]').forEach((el) => (el.textContent = new Date().getFullYear()));
     }
@@ -188,34 +418,63 @@
        ====================================================================== */
 
     function productCardHTML(p) {
-        const url = `product.html?item=${encodeURIComponent(p.id)}`;
+        const off = discountPercent(p);
         return `
         <article class="product-card">
-            <a href="${url}" class="product-card-media" tabindex="-1" aria-hidden="true">
-                <img src="${p.image}" alt="" loading="lazy" width="400" height="300">
+            <div class="product-card-media">
+                ${productImg(p, `alt="" loading="lazy" width="400" height="340"`)}
                 ${p.tag ? `<span class="tag">${escapeHTML(p.tag)}</span>` : ''}
-            </a>
+                ${off ? `<span class="tag sale">−${off}%</span>` : ''}
+                <button class="btn btn-sm btn-dark quick-add" data-add-to-cart="${p.id}" aria-label="Add ${escapeHTML(p.name)} to cart">+ Add to Cart</button>
+            </div>
             <div class="product-card-body">
                 <span class="product-category">${escapeHTML(p.category)}</span>
-                <h3><a href="${url}">${escapeHTML(p.name)}</a></h3>
-                <div class="rating" aria-label="Rated ${p.rating} out of 5">${renderStars(p.rating)}<small>(${p.reviews})</small></div>
-                <div class="product-card-footer">
+                <h3><a href="${productUrl(p)}">${escapeHTML(p.name)}</a></h3>
+                <div class="rating" aria-label="Rated ${p.rating} out of 5">${renderStars(p.rating)}<small>${p.rating} (${p.reviews})</small></div>
+                <div class="price-row">
                     <span class="price">${formatPrice(p.price)}</span>
-                    <button class="btn btn-sm" data-add-to-cart="${p.id}" aria-label="Add ${escapeHTML(p.name)} to cart">Add to Cart</button>
+                    ${p.oldPrice ? `<span class="old-price">${formatPrice(p.oldPrice)}</span>` : ''}
                 </div>
             </div>
         </article>`;
+    }
+
+    function bindAddToCart(container) {
+        container.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-add-to-cart]');
+            if (!btn) return;
+            e.preventDefault();
+            const product = findProduct(btn.dataset.addToCart);
+            Cart.add(product.id);
+            toast(`${product.name} added to cart`, { link: { href: 'cart.html', label: 'View cart' } });
+        });
     }
 
     function initProductGrid() {
         const grid = document.getElementById('product-grid');
         if (!grid) return;
 
+        const chips = document.getElementById('category-chips');
+        const search = document.getElementById('search-input');
         const sortSelect = document.getElementById('sort-select');
+        const countEl = document.getElementById('result-count');
+        let category = 'All';
+
+        // Build category chips from the catalogue
+        const categories = ['All', ...new Set(PRODUCTS.map((p) => p.category))];
+        chips.innerHTML = categories
+            .map((c) => `<button type="button" class="chip${c === 'All' ? ' active' : ''}" data-category="${escapeHTML(c)}" aria-pressed="${c === 'All'}">${c === 'All' ? 'All' : `${CATEGORY_ICONS[c]} ${escapeHTML(c)}`}</button>`)
+            .join('');
 
         const render = () => {
-            const list = [...PRODUCTS];
-            switch (sortSelect && sortSelect.value) {
+            const term = search.value.trim().toLowerCase();
+            let list = PRODUCTS.filter(
+                (p) =>
+                    (category === 'All' || p.category === category) &&
+                    (!term || [p.name, p.category, p.description].join(' ').toLowerCase().includes(term))
+            );
+
+            switch (sortSelect.value) {
                 case 'price-asc':
                     list.sort((a, b) => a.price - b.price);
                     break;
@@ -225,20 +484,32 @@
                 case 'rating':
                     list.sort((a, b) => b.rating - a.rating);
                     break;
+                case 'discount':
+                    list.sort((a, b) => discountPercent(b) - discountPercent(a));
+                    break;
             }
-            grid.innerHTML = list.map(productCardHTML).join('');
+
+            countEl.textContent = `${list.length} product${list.length === 1 ? '' : 's'}`;
+            grid.innerHTML = list.length
+                ? list.map(productCardHTML).join('')
+                : `<div class="results-empty"><div class="empty-state-icon" aria-hidden="true">🔍</div><h3>No products found</h3><p>Try a different search or category.</p></div>`;
         };
 
-        render();
-        if (sortSelect) sortSelect.addEventListener('change', render);
-
-        grid.addEventListener('click', (e) => {
-            const btn = e.target.closest('[data-add-to-cart]');
-            if (!btn) return;
-            const product = findProduct(btn.dataset.addToCart);
-            Cart.add(product.id);
-            toast(`${product.name} added to cart`, { link: { href: 'cart.html', label: 'View cart' } });
+        chips.addEventListener('click', (e) => {
+            const chip = e.target.closest('[data-category]');
+            if (!chip) return;
+            category = chip.dataset.category;
+            chips.querySelectorAll('.chip').forEach((c) => {
+                c.classList.toggle('active', c === chip);
+                c.setAttribute('aria-pressed', String(c === chip));
+            });
+            render();
         });
+
+        search.addEventListener('input', render);
+        sortSelect.addEventListener('change', render);
+        bindAddToCart(grid);
+        render();
     }
 
     /* ======================================================================
@@ -249,8 +520,7 @@
         const container = document.getElementById('product-detail');
         if (!container) return;
 
-        const id = new URLSearchParams(window.location.search).get('item');
-        const product = findProduct(id);
+        const product = findProduct(new URLSearchParams(window.location.search).get('item'));
 
         if (!product) {
             document.title = 'Product Not Found | TechStore';
@@ -267,17 +537,22 @@
         document.title = `${product.name} | TechStore`;
         const crumb = document.getElementById('breadcrumb-current');
         if (crumb) crumb.textContent = product.name;
+        const off = discountPercent(product);
 
         container.innerHTML = `
-        <div class="product-detail">
+        <div class="card product-detail">
             <div class="product-detail-media">
-                <img src="${product.image}" alt="${escapeHTML(product.name)}" width="800" height="800">
+                ${productImg(product, `alt="${escapeHTML(product.name)}" width="800" height="800"`)}
+                ${off ? `<span class="tag sale">−${off}%</span>` : ''}
             </div>
             <div>
-                <span class="product-category">${escapeHTML(product.category)}</span>
+                <span class="product-category">${CATEGORY_ICONS[product.category]} ${escapeHTML(product.category)}</span>
                 <h1>${escapeHTML(product.name)}</h1>
                 <div class="rating" aria-label="Rated ${product.rating} out of 5">${renderStars(product.rating)}<small>${product.rating} · ${product.reviews} reviews</small></div>
-                <p class="price">${formatPrice(product.price)}</p>
+                <div class="price-row">
+                    <span class="price">${formatPrice(product.price)}</span>
+                    ${product.oldPrice ? `<span class="old-price">${formatPrice(product.oldPrice)}</span><span class="save-pill">Save ${formatPrice(product.oldPrice - product.price)}</span>` : ''}
+                </div>
                 <p class="product-description">${escapeHTML(product.description)}</p>
                 <ul class="spec-list">${product.specs.map((s) => `<li>${escapeHTML(s)}</li>`).join('')}</ul>
                 <div class="purchase-row">
@@ -286,10 +561,14 @@
                         <output id="qty-value" aria-live="polite">1</output>
                         <button type="button" data-qty="1" aria-label="Increase quantity">+</button>
                     </div>
-                    <button id="add-to-cart-btn" class="btn">Add to Cart</button>
-                    <a href="index.html#shop" class="btn btn-outline">Continue Shopping</a>
+                    <button id="add-to-cart-btn" class="btn btn-lg">Add to Cart</button>
+                    <button id="buy-now-btn" class="btn btn-lg btn-outline">Buy Now</button>
                 </div>
-                <p class="stock">● In stock — ships within 24 hours</p>
+                <div class="perks">
+                    <div>🚚 Free shipping over $100</div>
+                    <div>↩️ 30-day returns</div>
+                    <div>🛡️ 1-year warranty</div>
+                </div>
             </div>
         </div>`;
 
@@ -298,7 +577,7 @@
 
         container.querySelectorAll('[data-qty]').forEach((btn) =>
             btn.addEventListener('click', () => {
-                qty = Math.min(10, Math.max(1, qty + Number(btn.dataset.qty)));
+                qty = Math.min(MAX_QTY, Math.max(1, qty + Number(btn.dataset.qty)));
                 qtyValue.textContent = qty;
             })
         );
@@ -307,6 +586,22 @@
             Cart.add(product.id, qty);
             toast(`${qty} × ${product.name} added to cart`, { link: { href: 'cart.html', label: 'View cart' } });
         });
+
+        document.getElementById('buy-now-btn').addEventListener('click', () => {
+            Cart.add(product.id, qty);
+            window.location.href = 'checkout.html';
+        });
+
+        // Related products: same category first, then others
+        const related = document.getElementById('related-grid');
+        if (related) {
+            const others = PRODUCTS.filter((p) => p.id !== product.id).sort(
+                (a, b) => (b.category === product.category) - (a.category === product.category) || b.rating - a.rating
+            );
+            related.innerHTML = others.slice(0, 4).map(productCardHTML).join('');
+            bindAddToCart(related);
+            document.getElementById('related-section').hidden = false;
+        }
     }
 
     /* ======================================================================
@@ -316,26 +611,28 @@
     const TRASH_ICON =
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>';
 
+    const emptyCartHTML = `
+        <div class="card empty-state">
+            <div class="empty-state-icon" aria-hidden="true">🛒</div>
+            <h2>Your cart is empty</h2>
+            <p>Looks like you haven't added anything yet.</p>
+            <a href="index.html#shop" class="btn">Start Shopping</a>
+        </div>`;
+
     function initCartPage() {
         const root = document.getElementById('cart-root');
         if (!root) return;
 
         const render = () => {
             const items = Cart.get();
-
             if (items.length === 0) {
-                root.innerHTML = `
-                <div class="card empty-state">
-                    <div class="empty-state-icon" aria-hidden="true">🛒</div>
-                    <h2>Your cart is empty</h2>
-                    <p>Looks like you haven't added anything yet.</p>
-                    <a href="index.html#shop" class="btn">Start Shopping</a>
-                </div>`;
+                root.innerHTML = emptyCartHTML;
                 return;
             }
 
-            const { subtotal, shipping, tax, total } = Cart.totals();
-            const remaining = FREE_SHIPPING_THRESHOLD - subtotal;
+            const t = Cart.totals();
+            const remaining = FREE_SHIPPING_THRESHOLD - t.afterDiscount;
+            const progress = Math.min(100, (t.afterDiscount / FREE_SHIPPING_THRESHOLD) * 100);
 
             root.innerHTML = `
             <div class="cart-layout">
@@ -344,13 +641,12 @@
                         ${items
                             .map(({ id, qty }) => {
                                 const p = findProduct(id);
-                                const url = `product.html?item=${encodeURIComponent(p.id)}`;
                                 return `
                             <li class="cart-item">
-                                <img src="${p.image}" alt="" width="80" height="80" loading="lazy">
+                                ${productImg(p, `alt="" width="84" height="84" loading="lazy"`)}
                                 <div class="cart-item-info">
-                                    <a href="${url}" class="cart-item-name">${escapeHTML(p.name)}</a>
-                                    <div class="cart-item-unit">${formatPrice(p.price)} each</div>
+                                    <a href="${productUrl(p)}" class="cart-item-name">${escapeHTML(p.name)}</a>
+                                    <div class="cart-item-unit">${escapeHTML(p.category)} · ${formatPrice(p.price)} each</div>
                                 </div>
                                 <div class="qty qty-sm" role="group" aria-label="Quantity for ${escapeHTML(p.name)}">
                                     <button type="button" data-action="dec" data-id="${p.id}" aria-label="Decrease quantity">−</button>
@@ -371,16 +667,23 @@
 
                 <aside class="card summary" aria-label="Order summary">
                     <h2>Order Summary</h2>
-                    <div class="summary-row"><span>Subtotal</span><span>${formatPrice(subtotal)}</span></div>
-                    <div class="summary-row"><span>Shipping</span><span>${shipping === 0 ? 'Free' : formatPrice(shipping)}</span></div>
-                    <div class="summary-row"><span>Estimated tax (8%)</span><span>${formatPrice(tax)}</span></div>
-                    <div class="summary-row total"><span>Total</span><span>${formatPrice(total)}</span></div>
-                    <p class="summary-note">${
-                        remaining > 0
-                            ? `Add ${formatPrice(remaining)} more to get <strong>free shipping</strong>.`
-                            : '🎉 Your order qualifies for free shipping.'
-                    }</p>
-                    <button class="btn btn-block" data-action="checkout">Proceed to Checkout</button>
+                    ${totalsHTML(t)}
+                    ${
+                        t.coupon
+                            ? `<div class="coupon-applied"><span>🏷️ <strong>${t.coupon}</strong> — ${COUPONS[t.coupon].label}</span><button type="button" data-action="remove-coupon">Remove</button></div>`
+                            : `<form class="coupon" data-coupon-form>
+                                   <label for="coupon-input" class="visually-hidden">Coupon code</label>
+                                   <input id="coupon-input" placeholder="Coupon code" autocomplete="off">
+                                   <button class="btn btn-sm btn-dark" type="submit">Apply</button>
+                               </form>
+                               <p class="coupon-hint">Try <strong>TECH10</strong> for 10% off.</p>`
+                    }
+                    <div class="summary-note">
+                        ${remaining > 0 ? `Add <strong>${formatPrice(remaining)}</strong> more for free shipping.` : '🎉 Your order qualifies for <strong>free shipping</strong>.'}
+                        <div class="progress" aria-hidden="true"><span style="width:${progress}%"></span></div>
+                    </div>
+                    <a href="checkout.html" class="btn btn-block btn-lg">Proceed to Checkout →</a>
+                    <p class="secure-note">🔒 Secure checkout · Card, wallet or cash on delivery</p>
                 </aside>
             </div>`;
         };
@@ -393,7 +696,8 @@
 
             switch (action) {
                 case 'inc':
-                    Cart.setQty(id, Math.min(10, item.qty + 1));
+                    if (item.qty >= MAX_QTY) toast(`Maximum ${MAX_QTY} per item`, { type: 'error' });
+                    Cart.setQty(id, item.qty + 1);
                     break;
                 case 'dec':
                     Cart.setQty(id, item.qty - 1);
@@ -405,19 +709,250 @@
                 case 'clear':
                     if (confirm('Remove all items from your cart?')) Cart.clear();
                     break;
-                case 'checkout':
-                    Cart.clear();
-                    toast('Order placed successfully! Thank you for shopping with TechStore.');
+                case 'remove-coupon':
+                    Coupon.remove();
                     break;
             }
             render();
+        });
+
+        root.addEventListener('submit', (e) => {
+            if (!e.target.matches('[data-coupon-form]')) return;
+            e.preventDefault();
+            const input = e.target.querySelector('input');
+            if (Coupon.apply(input.value)) {
+                toast(`Coupon ${input.value.trim().toUpperCase()} applied!`);
+                render();
+            } else {
+                toast('That coupon code is not valid', { type: 'error' });
+                input.select();
+            }
+        });
+
+        // Keep in sync with other tabs
+        window.addEventListener('storage', (e) => {
+            if (e.key === CART_KEY || e.key === COUPON_KEY) render();
         });
 
         render();
     }
 
     /* ======================================================================
-       7. CONTACT FORM
+       7. CHECKOUT & PAYMENT
+       ====================================================================== */
+
+    const PATTERNS = {
+        email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        phone: /^\+?[0-9\s-]{10,15}$/,
+        wallet: /^03[0-9]{9}$/,
+        postal: /^[0-9A-Za-z\s-]{4,10}$/
+    };
+
+    /** Luhn checksum — validates card number format (no real payment is made). */
+    function luhnValid(number) {
+        const digits = number.replace(/\D/g, '');
+        if (digits.length < 13 || digits.length > 19) return false;
+        let sum = 0;
+        for (let i = 0; i < digits.length; i++) {
+            let d = Number(digits[digits.length - 1 - i]);
+            if (i % 2 === 1) {
+                d *= 2;
+                if (d > 9) d -= 9;
+            }
+            sum += d;
+        }
+        return sum % 10 === 0;
+    }
+
+    function detectCardBrand(number) {
+        const n = number.replace(/\D/g, '');
+        if (/^4/.test(n)) return 'VISA';
+        if (/^(5[1-5]|2[2-7])/.test(n)) return 'MASTERCARD';
+        if (/^3[47]/.test(n)) return 'AMEX';
+        if (/^(6011|65)/.test(n)) return 'DISCOVER';
+        return '';
+    }
+
+    function expiryValid(value) {
+        const m = value.match(/^(0[1-9]|1[0-2])\s*\/\s*(\d{2})$/);
+        if (!m) return false;
+        const month = Number(m[1]);
+        const year = 2000 + Number(m[2]);
+        const now = new Date();
+        const endOfMonth = new Date(year, month, 0, 23, 59, 59);
+        return endOfMonth >= now && year <= now.getFullYear() + 15;
+    }
+
+    const VALIDATORS = {
+        fullName: (v) => v.trim().length >= 3,
+        email: (v) => PATTERNS.email.test(v.trim()),
+        phone: (v) => PATTERNS.phone.test(v.trim()),
+        address: (v) => v.trim().length >= 6,
+        city: (v) => v.trim().length >= 2,
+        postal: (v) => PATTERNS.postal.test(v.trim()),
+        cardNumber: (v) => luhnValid(v),
+        cardName: (v) => v.trim().length >= 3,
+        cardExpiry: (v) => expiryValid(v),
+        cardCvc: (v) => /^[0-9]{3,4}$/.test(v.trim()),
+        walletNumber: (v) => PATTERNS.wallet.test(v.replace(/[\s-]/g, ''))
+    };
+
+    function validateField(field) {
+        const check = VALIDATORS[field.name];
+        if (!check) return true;
+        const valid = check(field.value);
+        field.closest('.form-group').classList.toggle('invalid', !valid);
+        field.setAttribute('aria-invalid', String(!valid));
+        return valid;
+    }
+
+    function initCheckoutPage() {
+        const root = document.getElementById('checkout-root');
+        if (!root) return;
+
+        if (Cart.get().length === 0) {
+            root.innerHTML = emptyCartHTML;
+            return;
+        }
+
+        const form = document.getElementById('checkout-form');
+        const summaryEl = document.getElementById('checkout-summary');
+        const panels = form.querySelectorAll('[data-panel]');
+        const cardInput = form.querySelector('#cardNumber');
+        const brandEl = document.getElementById('card-brand');
+        const expiryInput = form.querySelector('#cardExpiry');
+        const submitBtn = document.getElementById('place-order-btn');
+
+        // --- Order summary
+        const renderSummary = () => {
+            const t = Cart.totals();
+            summaryEl.innerHTML = `
+                <h2>Order Summary</h2>
+                <ul class="mini-items">
+                    ${Cart.get()
+                        .map(({ id, qty }) => {
+                            const p = findProduct(id);
+                            return `<li class="mini-item">
+                                <div class="thumb">${productImg(p, `alt="" width="52" height="52"`)}<span class="count">${qty}</span></div>
+                                <span class="name">${escapeHTML(p.name)}</span>
+                                <span class="amount">${formatPrice(p.price * qty)}</span>
+                            </li>`;
+                        })
+                        .join('')}
+                </ul>
+                ${totalsHTML(t)}
+                <a href="cart.html" class="btn btn-outline btn-block btn-sm" style="margin-top:1rem">Edit cart</a>`;
+            submitBtn.querySelector('[data-total]').textContent = formatPrice(t.total);
+        };
+
+        // --- Payment method switching
+        const currentMethod = () => form.querySelector('input[name="paymentMethod"]:checked').value;
+
+        const showPanel = () => {
+            const method = currentMethod();
+            panels.forEach((panel) => {
+                const active = panel.dataset.panel === method;
+                panel.hidden = !active;
+                // Disable hidden inputs so they're skipped by validation
+                panel.querySelectorAll('input').forEach((i) => (i.disabled = !active));
+            });
+        };
+
+        form.querySelectorAll('input[name="paymentMethod"]').forEach((r) => r.addEventListener('change', showPanel));
+
+        // --- Input formatting
+        cardInput.addEventListener('input', () => {
+            const digits = cardInput.value.replace(/\D/g, '').slice(0, 19);
+            cardInput.value = digits.replace(/(.{4})/g, '$1 ').trim();
+            brandEl.textContent = detectCardBrand(digits);
+        });
+
+        expiryInput.addEventListener('input', (e) => {
+            let digits = expiryInput.value.replace(/\D/g, '').slice(0, 4);
+            if (digits.length >= 3) digits = `${digits.slice(0, 2)}/${digits.slice(2)}`;
+            else if (digits.length === 2 && e.inputType !== 'deleteContentBackward') digits += '/';
+            expiryInput.value = digits;
+        });
+
+        form.querySelectorAll('[data-digits-only]').forEach((input) =>
+            input.addEventListener('input', () => (input.value = input.value.replace(/\D/g, '')))
+        );
+
+        // --- Live validation
+        form.querySelectorAll('input').forEach((field) => {
+            field.addEventListener('blur', () => field.value && validateField(field));
+            field.addEventListener('input', () => {
+                if (field.closest('.form-group')?.classList.contains('invalid')) validateField(field);
+            });
+        });
+
+        // --- Submit
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const fields = [...form.querySelectorAll('input:not([disabled])')].filter((f) => VALIDATORS[f.name]);
+            const results = fields.map(validateField);
+
+            if (results.includes(false)) {
+                const firstInvalid = fields[results.indexOf(false)];
+                firstInvalid.focus();
+                toast('Please check the highlighted fields', { type: 'error' });
+                return;
+            }
+
+            const method = currentMethod();
+            const data = new FormData(form);
+            const t = Cart.totals();
+            const items = Cart.get();
+
+            let paymentLabel = 'Cash on Delivery';
+            if (method === 'card') {
+                const digits = data.get('cardNumber').replace(/\D/g, '');
+                paymentLabel = `${detectCardBrand(digits) || 'Card'} •••• ${digits.slice(-4)}`;
+            } else if (method === 'wallet') {
+                const number = data.get('walletNumber').replace(/\D/g, '');
+                paymentLabel = `${data.get('walletType')} •••• ${number.slice(-4)}`;
+            }
+
+            // Simulate payment processing
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner" aria-hidden="true"></span> Processing payment…';
+
+            setTimeout(() => {
+                const orderId = 'TS-' + Date.now().toString(36).toUpperCase().slice(-6);
+                const itemCount = items.reduce((s, i) => s + i.qty, 0);
+                Cart.clear();
+                // Card details are never stored — clear the form
+                form.reset();
+
+                document.querySelectorAll('.steps li').forEach((li) => {
+                    li.classList.remove('current');
+                    li.classList.add('done');
+                });
+
+                root.innerHTML = `
+                <div class="card card-narrow confirmation fade-in">
+                    <div class="success-icon" aria-hidden="true">✓</div>
+                    <h2>Thank you for your order!</h2>
+                    <p>A confirmation has been sent to <strong>${escapeHTML(data.get('email'))}</strong>.</p>
+                    <div class="order-meta">
+                        <div><span>Order number</span><strong>${orderId}</strong></div>
+                        <div><span>Items</span><strong>${itemCount}</strong></div>
+                        <div><span>Payment</span><strong>${escapeHTML(paymentLabel)}</strong></div>
+                        <div><span>Total ${method === 'cod' ? 'due on delivery' : 'paid'}</span><strong>${formatPrice(t.total)}</strong></div>
+                    </div>
+                    <p class="coupon-hint" style="margin-bottom:1.5rem">Shipping to ${escapeHTML(data.get('address'))}, ${escapeHTML(data.get('city'))}. Estimated delivery: 3–5 business days.</p>
+                    <a href="index.html" class="btn btn-lg">Continue Shopping</a>
+                </div>`;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 1500);
+        });
+
+        showPanel();
+        renderSummary();
+    }
+
+    /* ======================================================================
+       8. CONTACT FORM
        ====================================================================== */
 
     function initContactForm() {
@@ -425,36 +960,34 @@
         if (!form) return;
 
         const success = document.getElementById('form-success');
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        const validators = {
+        const rules = {
             name: (v) => v.trim().length >= 2,
-            email: (v) => emailPattern.test(v.trim()),
+            email: (v) => PATTERNS.email.test(v.trim()),
             message: (v) => v.trim().length >= 10
         };
 
-        const validateField = (field) => {
-            const valid = validators[field.name] ? validators[field.name](field.value) : true;
+        const check = (field) => {
+            const valid = rules[field.name] ? rules[field.name](field.value) : true;
             field.closest('.form-group').classList.toggle('invalid', !valid);
             field.setAttribute('aria-invalid', String(!valid));
             return valid;
         };
 
         form.querySelectorAll('input, textarea').forEach((field) => {
-            field.addEventListener('blur', () => validateField(field));
+            field.addEventListener('blur', () => check(field));
             // Clear the error as soon as the user fixes it (avoids layout jumps on blur)
             field.addEventListener('input', () => {
-                if (field.closest('.form-group').classList.contains('invalid')) validateField(field);
+                if (field.closest('.form-group').classList.contains('invalid')) check(field);
             });
         });
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             const fields = [...form.querySelectorAll('input, textarea')];
-            const allValid = fields.map(validateField).every(Boolean);
+            const results = fields.map(check);
 
-            if (!allValid) {
-                fields.find((f) => f.getAttribute('aria-invalid') === 'true').focus();
+            if (results.includes(false)) {
+                fields[results.indexOf(false)].focus();
                 return;
             }
 
@@ -466,16 +999,19 @@
     }
 
     /* ======================================================================
-       8. INITIALISATION
+       INITIALISATION
        ====================================================================== */
 
     document.addEventListener('DOMContentLoaded', () => {
+        initImageFallbacks();
         updateCartBadge();
         initNavigation();
+        initNewsletter();
         setFooterYear();
         initProductGrid();
         initProductPage();
         initCartPage();
+        initCheckoutPage();
         initContactForm();
     });
 
