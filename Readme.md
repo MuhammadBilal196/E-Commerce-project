@@ -6,15 +6,17 @@ A responsive, multi-page e-commerce storefront built with **vanilla HTML, CSS an
 
 | Area | Highlights |
 | --- | --- |
-| **Storefront** | Hero banner, feature strip, product grid rendered from a single catalogue, sort by price or rating |
-| **Product page** | Dynamic details via `?item=` URL parameter, breadcrumb, specs list, quantity selector, "not found" state |
-| **Cart** | Quantities (+/−), remove item, empty cart, live subtotal / shipping / tax / total, free-shipping progress |
-| **Persistence** | Cart saved in `localStorage` and synced across open tabs |
-| **Contact** | Client-side validation with inline error messages and success feedback |
-| **UX** | Toast notifications instead of `alert()`, animated cart badge, page fade-in, hover effects |
+| **Storefront** | Hero section, 12 products across 7 categories, category filter chips, live search, sort by price / rating / discount |
+| **Product page** | Dynamic details via `?item=` URL parameter, sale pricing, specs, quantity selector, "Buy Now", related products |
+| **Cart** | Quantities (+/−), remove item, coupon codes, live subtotal / discount / shipping / tax, free-shipping progress bar |
+| **Checkout & Payment** | Shipping form + three payment methods: **Credit/Debit Card** (Luhn check, brand detection, expiry validation), **Mobile Wallet** (JazzCash / Easypaisa) and **Cash on Delivery**, with order confirmation |
+| **Persistence** | Cart and coupon saved in `localStorage` and synced across open tabs |
+| **Contact & Newsletter** | Client-side validation with inline errors and success feedback |
+| **UX** | Toast notifications, animated cart badge, gradient UI, hover effects, image fallbacks |
 | **Responsive** | Mobile hamburger menu, fluid typography, Grid/Flexbox layouts |
 | **Accessibility** | Semantic landmarks, skip link, `aria-*` labels, visible focus styles, `prefers-reduced-motion` support |
-| **Extras** | Custom 404 page, SVG favicon, meta descriptions on every page |
+
+> 💡 **Demo only:** no real payment is processed and card details are never stored. Use the test card `4242 4242 4242 4242` with any future expiry date, and try coupon codes `TECH10` or `STUDENT15`.
 
 ## 🗂️ Project Structure
 
@@ -23,11 +25,12 @@ E-Commerce-project/
 ├── index.html      # Home / storefront
 ├── product.html    # Product details (dynamic)
 ├── cart.html       # Shopping cart & order summary
+├── checkout.html   # Shipping details, payment & confirmation
 ├── about.html      # About the store
 ├── contact.html    # Contact form
 ├── 404.html        # Not-found page
 ├── style.css       # Design tokens, components, responsive rules
-├── script.js       # Catalogue, cart store, page logic
+├── script.js       # Catalogue, cart store, checkout & page logic
 └── favicon.svg
 ```
 
@@ -52,6 +55,7 @@ All products live in the `PRODUCTS` array at the top of `script.js`. Add an obje
   name: 'Wireless Gaming Mouse',
   category: 'Accessories',
   price: 49.0,
+  oldPrice: 59.0,        // optional — shows a sale badge
   rating: 4.5,
   reviews: 61,
   tag: 'New',
