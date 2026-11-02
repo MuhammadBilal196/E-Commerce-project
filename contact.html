@@ -2,44 +2,100 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>TechStore | Contact</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Get in touch with the TechStore support team.">
+  <meta name="theme-color" content="#0f172a">
+  <title>Contact Us | TechStore</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <nav>
-      <a href="index.html" class="logo">TechStore</a>
-      <div class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="contact.html" class="active">Contact</a>
-        <a href="cart.html">Cart (<span id="cart-count">0</span>)</a>
-      </div>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <nav class="navbar container" aria-label="Main navigation">
+      <a href="index.html" class="logo">Tech<span>Store</span></a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="nav-links">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+      <ul class="nav-links" id="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html" class="active" aria-current="page">Contact</a></li>
+          <li><a href="cart.html" class="cart-link">Cart <span class="cart-badge" data-cart-count aria-label="items in cart">0</span></a></li>
+      </ul>
     </nav>
   </header>
 
-  <main class="fade-in" style="margin-top: 3rem;">
-    <h1 class="section-title">Contact Support</h1>
-    <div class="card" style="max-width: 600px; margin: 0 auto;">
-      <form id="contact-form" onsubmit="event.preventDefault(); alert('Message sent successfully!'); this.reset();">
-        <div class="form-group">
-          <label for="name">Full Name</label>
-          <input type="text" id="name" required placeholder="Your Name">
+  <main id="main" class="container page fade-in">
+    <h1 class="section-title center">Contact Support</h1>
+    <p class="section-subtitle">Questions about an order or a product? We usually reply within one business day.</p>
+    <div class="contact-layout">
+      <aside class="card contact-info">
+        <h2>Get in touch</h2>
+        <ul>
+          <li><span aria-hidden="true">📧</span><div><strong>Email</strong>support@techstore.com</div></li>
+          <li><span aria-hidden="true">📞</span><div><strong>Phone</strong>+1 (555) 123-4567</div></li>
+          <li><span aria-hidden="true">🕘</span><div><strong>Hours</strong>Mon – Fri, 9:00 – 18:00</div></li>
+        </ul>
+      </aside>
+
+      <section class="card">
+        <div id="form-success" class="form-success" role="status" tabindex="-1">
+          ✅ Thanks! Your message has been sent. We'll get back to you soon.
         </div>
-        <div class="form-group">
-          <label for="email">Email Address</label>
-          <input type="email" id="email" required placeholder="name@example.com">
-        </div>
-        <div class="form-group">
-          <label for="message">Your Message</label>
-          <textarea id="message" required placeholder="How can we help you?"></textarea>
-        </div>
-        <button type="submit" class="btn" style="width: 100%;">Send Message</button>
-      </form>
+        <form id="contact-form" novalidate>
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" autocomplete="name" placeholder="Your name" required>
+            <p class="field-error">Please enter your name.</p>
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" autocomplete="email" placeholder="name@example.com" required>
+            <p class="field-error">Please enter a valid email address.</p>
+          </div>
+          <div class="form-group">
+            <label for="message">Your Message</label>
+            <textarea id="message" name="message" placeholder="How can we help you?" required></textarea>
+            <p class="field-error">Message must be at least 10 characters.</p>
+          </div>
+          <button type="submit" class="btn btn-block">Send Message</button>
+        </form>
+      </section>
     </div>
   </main>
 
-  <footer><p>&copy; 2026 TechStore. All rights reserved.</p></footer>
-  <script src="script.js"></script>
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a href="index.html" class="logo">Tech<span>Store</span></a>
+          <p>Premium electronics, audio gear and smart devices — curated for work and play.</p>
+        </div>
+        <div>
+          <h3>Shop</h3>
+          <ul>
+            <li><a href="index.html#shop">All Products</a></li>
+            <li><a href="cart.html">Your Cart</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Company</h3>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; <span data-year>2026</span> TechStore. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js" defer></script>
 </body>
 </html>
